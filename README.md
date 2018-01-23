@@ -158,6 +158,7 @@ The third parameter is a configuration object. Options:
 
 - `delegateTo`: a function that gets the instance of the wrapper component and returns the instance of the wrapped component (e.g. `wrapper => wrapper.refs.child`)
 - `hoistStatics: true/false` - controls whether to hoist statics or not
+- `ignoreWarnings: true/false` - controls whether to show duplicate method warnings
 
 ## Test
 

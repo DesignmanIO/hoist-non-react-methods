@@ -56,6 +56,7 @@ export default function hoistNonReactMethods(targetComponent, sourceComponent, c
   const targetComponentName = targetComponent.displayName || targetComponent.name || 'Wrapper'
   const sourceComponentName = sourceComponent.displayName || sourceComponent.name || 'WrappedComponent'
   const hoistStatics = config && typeof config.hoistStatics !== 'undefined' ? config.hoistStatics : defaultConfig.hoistStatics
+  const ignoreWarnings = config && config.ignoreWarnings
   let delegateTo = config && typeof config.delegateTo !== 'undefined' ? config.delegateTo : defaultConfig.delegateTo
   // backwards compatible where config option is delegateTo function
   if (typeof config === 'function') delegateTo = config
@@ -65,7 +66,7 @@ export default function hoistNonReactMethods(targetComponent, sourceComponent, c
       .filter(k => !REACT_STATICS[k] && !KNOWN_STATICS[k])
 
     statics.forEach(methodName => {
-      if(targetComponent[methodName]) console.warn(`Static method ${methodName} already exists in wrapper component ${targetComponentName}, and won't be hoisted. Consider changing the name on ${sourceComponentName}.`)
+      if(targetComponent[methodName] && !ignoreWarnings) console.warn(`Static method ${methodName} already exists in wrapper component ${targetComponentName}, and won't be hoisted. Consider changing the name on ${sourceComponentName}.`)
       targetComponent[methodName] = sourceComponent[methodName]
     })
   }
@@ -74,7 +75,7 @@ export default function hoistNonReactMethods(targetComponent, sourceComponent, c
     .filter(k => !REACT_PROTOTYPE[k])
 
   methods.forEach(methodName => {
-    if (targetComponent.prototype[methodName]) {
+    if (targetComponent.prototype[methodName] && !ignoreWarnings) {
       console.warn(`Method ${methodName} already exists in wrapper component ${targetComponentName}, and won't be hoisted. Consider changing the name on ${sourceComponentName}.`)
       return
     }

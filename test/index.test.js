@@ -151,6 +151,36 @@ describe('hoist-non-react-methods', function () {
 
       consoleSpy.restore()
     })
+
+    it('ignores warnings when config.ignoreWarnings is true', function () {
+      Child = class extends Component {
+        render() {
+          return null
+        }
+
+        static staticMethodThatExistsInBoth() {
+          return 'staticMethodThatExistsInBoth Child'
+        }
+      }
+
+      Wrapper = class extends Component {
+        render() {
+          return <Child ref="child" />
+        }
+
+        static staticMethodThatExistsInBoth() {
+          return 'staticMethodThatExistsInBoth Wrapper'
+        }
+      }
+
+      const consoleSpy = sinon.spy(console, 'warn')
+
+      hoistNonReactMethods(Wrapper, Child, { ignoreWarnings: true })
+
+      assert(consoleSpy.notCalled)
+
+      consoleSpy.restore()
+    })
   })
 
   context('decorated component', function () {
